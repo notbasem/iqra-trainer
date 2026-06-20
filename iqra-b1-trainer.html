@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f4c3a">
+<title>IQRA B1 · Taǧwīd-Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f4c3a;--teal-2:#13624a;--teal-3:#1c7a5e;
+  --gold:#c39a4d;--gold-2:#a87f33;--gold-soft:#e9d9b0;
+  --cream:#f6f2e8;--paper:#fffdf8;--ink:#22281f;--ink-soft:#52584b;--line:#e3dcc9;
+  --ok:#1c7a5e;--ok-bg:#e4f1ea;--bad:#b23b34;--bad-bg:#f8e6e3;
+  --shadow:0 1px 2px rgba(20,40,30,.06),0 8px 24px rgba(20,40,30,.07);
+  --radius:14px;--navh:64px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:rgba(195,154,77,.35)}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--ink);
+  background:var(--cream);touch-action:manipulation;line-height:1.55;
+  background-image:radial-gradient(circle at 12% -5%,rgba(195,154,77,.10),transparent 40%),
+                   radial-gradient(circle at 95% 0%,rgba(15,76,58,.08),transparent 38%);
+  padding-bottom:calc(var(--navh) + env(safe-area-inset-bottom));
+}
+button{touch-action:manipulation}
+.ar{font-family:'Amiri','Scheherazade New',serif;direction:rtl;unicode-bidi:isolate;font-weight:700;line-height:1.4}
+
+/* ---------- Top brand bar ---------- */
+header.top{
+  position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--teal),var(--teal-2));
+  color:#fff;box-shadow:0 2px 14px rgba(15,76,58,.25);padding-top:env(safe-area-inset-top);
+}
+.top-inner{max-width:1080px;margin:0 auto;padding:.6rem 1rem;display:flex;align-items:center;gap:.8rem}
+.brand{display:flex;align-items:center;gap:.6rem;margin-inline-end:auto;min-width:0}
+.logo{width:38px;height:38px;border-radius:10px;flex:none;background:radial-gradient(circle at 30% 25%,#1c7a5e,#0a3a2c);display:grid;place-items:center;border:1.5px solid var(--gold)}
+.logo span{font-family:'Amiri',serif;font-size:1.2rem;color:var(--gold-soft);transform:translateY(1px)}
+.brand b{font-weight:800;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{display:block;color:var(--gold-soft);font-size:.68rem;letter-spacing:.6px;text-transform:uppercase;font-weight:600}
+/* desktop top tabs */
+nav.toptabs{display:none;gap:.25rem}
+nav.toptabs button{font:inherit;font-weight:600;font-size:.86rem;color:#dceee6;background:transparent;border:0;padding:.5rem .8rem;border-radius:9px;cursor:pointer}
+nav.toptabs button.active{background:var(--gold);color:#3a2c08;font-weight:700}
+
+/* ---------- Bottom nav (mobile primary) ---------- */
+nav.bottomnav{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;
+  background:var(--paper);border-top:1px solid var(--line);
+  box-shadow:0 -4px 18px rgba(20,40,30,.10);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+nav.bottomnav button{
+  flex:1;min-width:0;height:var(--navh);border:0;background:transparent;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  color:var(--ink-soft);font:inherit;font-size:.66rem;font-weight:600;padding:.3rem .1rem;
+}
+nav.bottomnav button .ic{font-size:1.35rem;line-height:1;transition:transform .15s}
+nav.bottomnav button.active{color:var(--teal)}
+nav.bottomnav button.active .ic{transform:translateY(-2px) scale(1.08)}
+nav.bottomnav button.active span.lab{color:var(--teal-3)}
+nav.bottomnav button::after{content:"";position:absolute;top:0;height:3px;width:34px;border-radius:0 0 4px 4px;background:transparent}
+nav.bottomnav button.active::after{background:var(--gold)}
+nav.bottomnav button{position:relative}
+
+/* ---------- Layout ---------- */
+main{max-width:1080px;margin:0 auto;padding:1.1rem 1rem 2.5rem}
+.view{display:none;animation:fade .3s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:.72rem;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;color:var(--gold-2)}
+h1.display{font-family:'Amiri',serif;font-weight:700;font-size:clamp(1.7rem,7vw,3rem);line-height:1.1;margin:.2rem 0 .5rem}
+h2.sec{font-family:'Amiri',serif;font-weight:700;font-size:1.4rem;margin:1.8rem 0 .4rem;color:var(--teal)}
+.lead{font-size:1rem;color:var(--ink-soft);max-width:62ch}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:1.1rem}
+
+/* hero */
+.hero-art{border-radius:var(--radius);overflow:hidden;position:relative;background:linear-gradient(150deg,var(--teal),#082b21 90%);color:#fff;padding:1.4rem 1.2rem;border:1px solid #0a3a2c;margin-top:.5rem}
+.hero-art .basmala{font-family:'Amiri',serif;font-size:clamp(1.4rem,6vw,2.3rem);color:var(--gold-soft);text-align:center;direction:rtl;line-height:1.8}
+.hero-art .tr{text-align:center;color:#bfe0d4;font-size:.82rem;margin-top:.5rem;font-style:italic}
+.hero-art .deco{position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(195,154,77,.06) 0 2px,transparent 2px 16px);pointer-events:none}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.8rem}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:.8rem;box-shadow:var(--shadow)}
+.stat b{font-family:'Amiri',serif;font-size:1.7rem;color:var(--teal-3);display:block;line-height:1}
+.stat small{color:var(--ink-soft);font-size:.76rem;font-weight:500}
+
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1rem}
+.quick button{
+  text-align:start;font:inherit;color:inherit;display:block;padding:.95rem;border-radius:12px;
+  background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;min-height:88px;
+}
+.quick button:active{transform:scale(.98);border-color:var(--gold)}
+.quick .ico{font-size:1.4rem}
+.quick b{display:block;margin-top:.3rem;font-size:.95rem}
+.quick small{color:var(--ink-soft);font-size:.8rem}
+
+/* sifat tree */
+.tree-col h3{margin:.6rem 0 .6rem;font-family:'Amiri',serif;color:var(--teal);font-size:1.1rem;border-bottom:2px solid var(--gold-soft);padding-bottom:.3rem}
+.tree-col:first-child h3{margin-top:0}
+.pair{display:flex;gap:.5rem;margin-bottom:.45rem}
+.pair .p{flex:1;background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:.45rem .55rem;font-size:.83rem}
+.pair .p .ar{font-size:1.05rem;color:var(--gold-2)}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem}
+.chip{background:var(--ok-bg);color:var(--teal);border:1px solid #cfe6db;border-radius:20px;padding:.3rem .7rem;font-size:.82rem;font-weight:600}
+.chip .ar{font-size:1rem;color:var(--gold-2)}
+
+/* lessons */
+.lesson{margin-bottom:.6rem;border:1px solid var(--line);border-radius:12px;background:var(--paper);overflow:hidden;box-shadow:var(--shadow)}
+.lesson > .lhead{width:100%;text-align:start;font:inherit;cursor:pointer;background:transparent;border:0;padding:.95rem 1rem;display:flex;align-items:center;gap:.8rem;min-height:60px}
+.lesson > .lhead:active{background:#faf7ef}
+.lnum{flex:none;width:34px;height:34px;border-radius:9px;background:var(--teal);color:var(--gold-soft);display:grid;place-items:center;font-family:'Amiri',serif;font-weight:700}
+.ltitle{flex:1;min-width:0}
+.ltitle b{display:block;font-size:.96rem}
+.ltitle small{color:var(--ink-soft);font-size:.8rem}
+.lesson .arr{color:var(--gold-2);transition:.2s;font-size:1.2rem}
+.lesson.open .arr{transform:rotate(90deg)}
+.lbody{display:none;padding:0 1rem 1rem;border-top:1px dashed var(--line)}
+.lesson.open .lbody{display:block}
+.lbody h4{margin:1rem 0 .3rem;color:var(--teal-2);font-size:.92rem}
+.lbody ul{margin:.3rem 0;padding-inline-start:1.1rem}
+.lbody li{margin:.25rem 0;font-size:.9rem}
+.lbody .ar{font-size:1.1rem;color:var(--gold-2)}
+.note{background:var(--ok-bg);border-inline-start:3px solid var(--teal-3);border-radius:8px;padding:.55rem .75rem;font-size:.86rem;margin:.7rem 0}
+.warn{background:#fff5e6;border-inline-start:3px solid var(--gold-2);border-radius:8px;padding:.55rem .75rem;font-size:.86rem;margin:.7rem 0}
+
+/* makharij */
+.makhraj-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1rem}
+.mk{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:.9rem;cursor:pointer;box-shadow:var(--shadow);text-align:center;font:inherit;color:inherit;min-height:108px}
+.mk:active,.mk.sel{border-color:var(--gold);background:#fbf7ee}
+.mk .ar{font-size:1.4rem;color:var(--teal-3);display:block}
+.mk b{display:block;margin-top:.2rem;font-size:.92rem}
+.mk small{color:var(--ink-soft);font-size:.76rem}
+#mkDetail{margin-top:1rem}
+.subloc{border:1px solid var(--line);border-radius:10px;padding:.7rem .85rem;margin-bottom:.55rem;background:var(--cream)}
+.subloc .h{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+.subloc .letters{display:flex;gap:.45rem}
+.subloc .letters span{font-family:'Amiri',serif;font-weight:700;font-size:1.5rem;color:var(--gold-2)}
+.subloc small{color:var(--ink-soft);font-size:.82rem}
+
+/* trainer */
+.letterpick{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center}
+.letterpick button{font-family:'Amiri',serif;font-weight:700;font-size:1.5rem;width:48px;height:48px;border:1px solid var(--line);background:var(--paper);border-radius:11px;cursor:pointer;color:var(--ink)}
+.letterpick button:active{background:#fbf7ee}
+.letterpick button.active{background:var(--teal);color:var(--gold-soft);border-color:var(--teal)}
+.tr-panel{margin-top:1rem}
+.tr-panel h3{margin:.1rem 0 .2rem;font-family:'Amiri',serif;color:var(--teal);font-size:1.2rem}
+.checkgrid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.7rem}
+.checkgrid label{display:flex;align-items:center;gap:.55rem;background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:.6rem .65rem;font-size:.86rem;cursor:pointer;user-select:none;min-height:46px}
+.checkgrid input{accent-color:var(--teal-3);width:20px;height:20px;flex:none}
+.checkgrid label.correct{background:var(--ok-bg);border-color:#a9d6c2}
+.checkgrid label.wrong{background:var(--bad-bg);border-color:#e7b6b1}
+.checkgrid label.missed{background:#fff5e6;border-color:var(--gold)}
+.btn{font:inherit;font-weight:700;cursor:pointer;border:0;border-radius:10px;padding:.7rem 1.1rem;font-size:.92rem;min-height:46px}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--teal);color:#fff}
+.btn.gold{background:var(--gold);color:#3a2c08}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.tr-actions{display:flex;gap:.5rem;margin-top:.9rem;flex-wrap:wrap}
+.tr-actions .btn{flex:1;min-width:130px}
+.feedback{margin-top:.8rem;font-size:.9rem;font-weight:600;min-height:1.2em}
+.feedback.ok{color:var(--ok)}.feedback.no{color:var(--bad)}
+
+/* reference table */
+.tablewrap{overflow-x:auto;margin-top:1rem;border:1px solid var(--line);border-radius:12px;-webkit-overflow-scrolling:touch}
+table.ref{border-collapse:collapse;width:100%;font-size:.8rem;background:var(--paper)}
+table.ref th,table.ref td{border:1px solid var(--line);padding:.35rem .3rem;text-align:center}
+table.ref thead th{background:var(--teal);color:#fff;font-weight:600;font-size:.68rem;writing-mode:vertical-rl;text-orientation:mixed;height:84px}
+table.ref thead th:first-child{writing-mode:horizontal-tb;height:auto}
+table.ref td.l{font-family:'Amiri',serif;font-size:1.35rem;font-weight:700;color:var(--gold-2);background:var(--cream);position:sticky;left:0}
+table.ref td.y{background:var(--ok-bg);color:var(--teal);font-weight:800}
+
+/* exam */
+.scorebar{position:sticky;top:calc(54px + env(safe-area-inset-top));z-index:30;background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:.7rem .9rem;display:none;align-items:center;gap:.8rem;flex-wrap:wrap;margin:.8rem 0 1rem}
+.scorebar.show{display:flex}
+.scorebar .big{font-family:'Amiri',serif;font-size:1.3rem;color:var(--teal);font-weight:700}
+.bar{flex:1;min-width:120px;height:12px;background:var(--cream);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--teal-3));transition:.6s}
+.part{margin:1.4rem 0}
+.part-h{display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem;flex-wrap:wrap}
+.part-h .tag{background:var(--gold);color:#3a2c08;font-weight:800;font-size:.76rem;padding:.2rem .6rem;border-radius:7px}
+.part-h h3{font-family:'Amiri',serif;color:var(--teal);font-size:1.2rem;margin:0;flex:1;min-width:140px}
+.part-h .pts{font-size:.78rem;color:var(--ink-soft);font-weight:600}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:.9rem;margin-bottom:.6rem;box-shadow:var(--shadow)}
+.q .qt{font-size:.95rem;font-weight:500;margin-bottom:.55rem}
+.q .qt .ar{font-size:1.2rem;color:var(--gold-2)}
+.q .qn{color:var(--gold-2);font-weight:800;margin-inline-end:.3rem}
+.opts{display:flex;flex-direction:column;gap:.45rem}
+.opt{display:flex;align-items:center;gap:.6rem;border:1.5px solid var(--line);border-radius:9px;padding:.65rem .75rem;cursor:pointer;font-size:.92rem;background:#fff;min-height:48px}
+.opt:active{background:#fbf7ee}
+.opt input{accent-color:var(--teal-3);width:20px;height:20px;flex:none}
+.opt .ar{font-size:1.15rem}
+.opt.tf{flex:1;justify-content:center;font-weight:700}
+.tfrow{display:flex;gap:.5rem}
+.q.graded .opt.correct{background:var(--ok-bg);border-color:var(--ok)}
+.q.graded .opt.chosen-wrong{background:var(--bad-bg);border-color:var(--bad)}
+.q .why{display:none;margin-top:.6rem;font-size:.85rem;background:var(--cream);border-inline-start:3px solid var(--gold);border-radius:7px;padding:.5rem .7rem;color:var(--ink-soft)}
+.q.graded .why{display:block}
+.q .res{display:none;font-weight:800;font-size:.82rem;margin-inline-start:auto}
+.q.graded .res{display:inline}.q.graded .res.ok{color:var(--ok)}.q.graded .res.no{color:var(--bad)}
+.qhead{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+
+.examgrid{overflow-x:auto;border:1px solid var(--line);border-radius:11px;-webkit-overflow-scrolling:touch}
+table.eg{border-collapse:collapse;width:100%;font-size:.8rem;min-width:520px;background:var(--paper)}
+table.eg th{border:1px solid var(--line);background:var(--teal);color:#fff;font-size:.68rem;padding:.4rem .2rem;text-align:center}
+table.eg td{border:1px solid var(--line);padding:0;text-align:center}
+table.eg td.l{font-family:'Amiri',serif;font-size:1.35rem;font-weight:700;color:var(--gold-2);background:var(--cream);padding:.2rem .35rem;position:sticky;left:0}
+table.eg td.cell label{display:flex;align-items:center;justify-content:center;min-height:42px;cursor:pointer;margin:0}
+table.eg input{width:20px;height:20px;accent-color:var(--teal-3);cursor:pointer}
+table.eg.graded td.cell.good{background:var(--ok-bg)}
+table.eg.graded td.cell.miss{background:#fff3df}
+table.eg.graded td.cell.over{background:var(--bad-bg)}
+
+.letterselect{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.3rem}
+.letterselect label{font-family:'Amiri',serif;font-weight:700;font-size:1.45rem;width:50px;height:50px;display:grid;place-items:center;border:1.5px solid var(--line);border-radius:11px;cursor:pointer;position:relative;background:#fff;color:var(--ink)}
+.letterselect input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.letterselect label.on{background:var(--teal);color:var(--gold-soft);border-color:var(--teal)}
+.letterselect.graded label.t-correct{outline:3px solid var(--ok);outline-offset:1px}
+.letterselect.graded label.t-missed{outline:3px dashed var(--gold-2);outline-offset:1px}
+.letterselect.graded label.t-wrong{outline:3px solid var(--bad);outline-offset:1px}
+
+.rarow{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:.6rem .75rem;margin-bottom:.5rem;background:var(--paper)}
+.rarow .w{font-family:'Amiri',serif;font-size:1.6rem;color:var(--gold-2);min-width:80px}
+.rarow .ctx{font-size:.76rem;color:var(--ink-soft);flex:1;min-width:110px}
+.rarow .pick{display:flex;gap:.4rem}
+.rarow .pick label{border:1.5px solid var(--line);border-radius:8px;padding:.5rem .7rem;font-size:.83rem;cursor:pointer;font-weight:600;min-height:42px;display:flex;align-items:center}
+.rarow .pick input{display:none}
+.rarow .pick label.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.rarow.graded .pick label.right{background:var(--ok-bg);border-color:var(--ok);color:var(--teal)}
+.rarow.graded .pick label.wrongpick{background:var(--bad-bg);border-color:var(--bad)}
+.rarow .verdict{font-weight:800;font-size:.8rem;width:100%;display:none}
+.rarow.graded .verdict{display:block}
+.rarow .why{width:100%;display:none}.rarow.graded .why{display:block;margin-top:.4rem;font-size:.82rem;background:var(--cream);border-inline-start:3px solid var(--gold);border-radius:7px;padding:.4rem .6rem;color:var(--ink-soft)}
+
+.textq{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:.95rem;margin-bottom:.6rem;box-shadow:var(--shadow)}
+.textq .qt{font-weight:600;font-size:.94rem;margin-bottom:.5rem}
+.textq textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:.6rem;font:inherit;font-size:.9rem;min-height:78px;resize:vertical;background:#fffdf8}
+.reveal-btn{margin-top:.55rem}
+.model{display:none;margin-top:.6rem;background:var(--ok-bg);border:1px solid #bfe0d2;border-radius:9px;padding:.7rem;font-size:.87rem}
+.model.show{display:block}
+.model b{color:var(--teal)}.model .ar{font-size:1.1rem;color:var(--gold-2)}
+
+.exam-foot{display:flex;flex-direction:column;gap:.6rem;margin-top:1.3rem}
+.exam-foot .btn{width:100%}
+.result-banner{display:none;margin-top:1rem;border-radius:12px;padding:1rem 1.1rem;font-size:.95rem;border:1px solid}
+.result-banner.show{display:block}
+.result-banner.pass{background:var(--ok-bg);border-color:#a9d6c2;color:var(--teal)}
+.result-banner.fail{background:#fff5e6;border-color:var(--gold);color:var(--gold-2)}
+.result-banner b{font-family:'Amiri',serif;font-size:1.25rem}
+
+/* floating grade button (mobile) */
+.fab{position:fixed;right:14px;bottom:calc(var(--navh) + 14px + env(safe-area-inset-bottom));z-index:55;background:var(--gold);color:#3a2c08;border:0;border-radius:30px;padding:.8rem 1.2rem;font:inherit;font-weight:800;box-shadow:0 6px 20px rgba(168,127,51,.45);cursor:pointer;display:none}
+.fab.show{display:block;animation:pop .25s ease}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+footer{max-width:1080px;margin:0 auto;padding:1.2rem 1rem 1rem;color:var(--ink-soft);font-size:.78rem;text-align:center}
+
+/* ---------- Desktop ---------- */
+@media(min-width:760px){
+  :root{--navh:0px}
+  body{padding-bottom:0}
+  nav.bottomnav{display:none}
+  nav.toptabs{display:flex}
+  .fab{display:none!important}
+  main{padding:1.6rem 1.2rem 4rem}
+  .quick{grid-template-columns:repeat(4,1fr)}
+  .makhraj-grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+  .checkgrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .start-grids{display:grid;grid-template-columns:1.4fr 1fr;gap:1.4rem;align-items:start}
+  .tree{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  .trainer{display:grid;grid-template-columns:170px 1fr;gap:1.2rem}
+  .tr-panel{margin-top:0}
+  .letterpick{justify-content:flex-start}
+  .exam-foot{flex-direction:row;align-items:center}
+  .exam-foot .btn{width:auto}
+  .scorebar{top:64px}
+}
+@media(min-width:760px){
+  .hero-wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:1.4rem;align-items:stretch}
+  .hero-art{margin-top:0;display:flex;flex-direction:column;justify-content:center;min-height:220px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="logo"><span>اقرأ</span></div>
+      <div><b>IQRA · Stufe B1</b><small>Taǧwīd-Trainer</small></div>
+    </div>
+    <nav class="toptabs" data-nav>
+      <button data-tab="start" class="active">Start</button>
+      <button data-tab="lektionen">Lektionen</button>
+      <button data-tab="makharij">Maḫāriǧ</button>
+      <button data-tab="eigenschaften">Eigenschaften</button>
+      <button data-tab="pruefung">Prüfung</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- START -->
+<section class="view active" id="start">
+  <div class="eyebrow">Qur'an-Programm · Wien</div>
+  <h1 class="display">Taǧwīd lernen &amp; testen</h1>
+  <p class="lead">Der komplette Stoff der B1-Lektionen 1–13 plus eine automatisch benotete Übungsprüfung — bedienbar am Handy.</p>
+
+  <div class="hero-wrap">
+    <div class="hero-art">
+      <div class="deco"></div>
+      <div class="basmala">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      <div class="tr">„Lerne den Qur'an, denn er ist der Frühling der Herzen.“ — Imam ʿAlī (rA)</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>17</b><small>Unter-Entstehungsorte · 5 Gruppen</small></div>
+      <div class="stat"><b>29</b><small>Buchstaben mit Eigenschaften</small></div>
+      <div class="stat"><b>4 + 8</b><small>gegensätzl. &amp; nicht-geg. Ṣifāt</small></div>
+      <div class="stat"><b>Auto</b><small>benotete Prüfung</small></div>
+    </div>
+  </div>
+
+  <div class="quick" data-nav>
+    <button data-tab="lektionen"><div class="ico">📖</div><b>Lektionen</b><small>Theorie 1–13</small></button>
+    <button data-tab="makharij"><div class="ico">🗣️</div><b>Maḫāriǧ</b><small>Entstehungsorte</small></button>
+    <button data-tab="eigenschaften"><div class="ico">✓</div><b>Eigenschaften</b><small>Trainer</small></button>
+    <button data-tab="pruefung"><div class="ico">📝</div><b>Prüfung</b><small>auto-benotet</small></button>
+  </div>
+
+  <h2 class="sec">Eigenschaften der Buchstaben</h2>
+  <div class="card pad">
+    <div class="tree">
+      <div class="tree-col">
+        <h3>Gegensätzlich — المتضادة</h3>
+        <div class="pair"><div class="p"><b>hams</b> <span class="ar">الهمس</span><br>Luftfluss</div><div class="p"><b>ǧahr</b> <span class="ar">الجهر</span><br>kein Luftfluss</div></div>
+        <div class="pair"><div class="p"><b>šidda</b> <span class="ar">الشدة</span><br>kein Tonfluss</div><div class="p"><b>raḫāwa</b> <span class="ar">الرخاوة</span><br>Tonfluss</div></div>
+        <div class="pair"><div class="p"><b>istiʿlāʾ</b><br>dick / hoch</div><div class="p"><b>istifāl</b><br>dünn / tief</div></div>
+        <div class="pair"><div class="p"><b>iṭbāq</b><br>Einschließen</div><div class="p"><b>infitāḥ</b><br>Öffnen</div></div>
+        <small style="color:var(--ink-soft)">Dazwischen: <b>bayniyya</b> — Teil-Tonfluss.</small>
+      </div>
+      <div class="tree-col">
+        <h3>Nicht gegensätzlich — لا ضد لها</h3>
+        <div class="chips">
+          <span class="chip">ṣafīr <span class="ar">ص ز س</span></span>
+          <span class="chip">qalqala <span class="ar">ق ط ب ج د</span></span>
+          <span class="chip">līn <span class="ar">و ي</span></span>
+          <span class="chip">inḥirāf <span class="ar">ل ر</span></span>
+          <span class="chip">takrīr <span class="ar">ر</span></span>
+          <span class="chip">tafašī <span class="ar">ش</span></span>
+          <span class="chip">istiṭāla <span class="ar">ض</span></span>
+          <span class="chip">ġunna <span class="ar">ن م</span></span>
+        </div>
+        <div class="note" style="margin-top:1rem">Diese haben kein Gegenstück — ein Buchstabe hat sie oder nicht. Im Trainer übst du jeden einzeln.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEKTIONEN -->
+<section class="view" id="lektionen">
+  <div class="eyebrow">Theorie</div>
+  <h1 class="display">Lektionen 1–13</h1>
+  <p class="lead">Tippe eine Lektion an, um die Kernpunkte aufzuklappen.</p>
+  <div id="lessonList" style="margin-top:1.1rem"></div>
+</section>
+
+<!-- MAKHARIJ -->
+<section class="view" id="makharij">
+  <div class="eyebrow">al-maḫāriǧ</div>
+  <h1 class="display">Wo entsteht welcher Laut?</h1>
+  <p class="lead">29 Buchstaben · 17 Unter-Entstehungsorte · 5 Hauptgruppen. Tippe eine Gruppe an.</p>
+  <div class="makhraj-grid" id="mkGrid"></div>
+  <div id="mkDetail" class="card pad" style="display:none"></div>
+</section>
+
+<!-- EIGENSCHAFTEN -->
+<section class="view" id="eigenschaften">
+  <div class="eyebrow">صفات الحروف</div>
+  <h1 class="display">Eigenschaften-Trainer</h1>
+  <p class="lead">Buchstabe wählen, Eigenschaften ankreuzen, „Prüfen“ tippen. Genau diese Tabelle kommt in Aufgabe 3.3.</p>
+  <div class="card pad" style="margin-top:1.1rem">
+    <div class="trainer">
+      <div class="letterpick" id="letterpick"></div>
+      <div class="tr-panel">
+        <h3 id="trLetter">— Buchstabe wählen —</h3>
+        <div style="color:var(--ink-soft);font-size:.86rem" id="trHint">Tippe oben einen Buchstaben.</div>
+        <div class="checkgrid" id="trGrid"></div>
+        <div class="tr-actions">
+          <button class="btn primary" id="trCheck">Prüfen</button>
+          <button class="btn ghost" id="trReset">Zurücksetzen</button>
+          <button class="btn gold" id="trNext">Zufällig →</button>
+        </div>
+        <div class="feedback" id="trFeedback"></div>
+      </div>
+    </div>
+  </div>
+  <h2 class="sec">Referenztabelle (alle 29)</h2>
+  <p style="color:var(--ink-soft);font-size:.88rem">Grün = besitzt die Eigenschaft. Seitlich scrollbar.</p>
+  <div class="tablewrap"><table class="ref" id="refTable"></table></div>
+</section>
+
+<!-- PRÜFUNG -->
+<section class="view" id="pruefung">
+  <div class="eyebrow">Übungsprüfung · SS 2026</div>
+  <h1 class="display" style="margin-bottom:.2rem">Prüfung</h1>
+  <p style="color:var(--ink-soft);font-size:.9rem">Wahr/Falsch, Multiple Choice &amp; Markier-Aufgaben werden automatisch benotet. Textfragen vergleichst du mit der Musterlösung.</p>
+
+  <div class="scorebar" id="scorebar">
+    <span class="big" id="scoreText">0 / 0</span>
+    <div class="bar"><i id="scoreFill"></i></div>
+    <span style="font-size:.8rem;color:var(--ink-soft)" id="scorePct"></span>
+  </div>
+
+  <div class="part">
+    <div class="part-h"><span class="tag">Teil 1</span><h3>Wahr / Falsch</h3><span class="pts">10 P.</span></div>
+    <div id="tfWrap"></div>
+  </div>
+  <div class="part">
+    <div class="part-h"><span class="tag">Teil 2</span><h3>Multiple Choice</h3><span class="pts">10 P.</span></div>
+    <div id="mcWrap"></div>
+  </div>
+  <div class="part">
+    <div class="part-h"><span class="tag">Teil 3</span><h3>Markieren &amp; Textfragen</h3><span class="pts">40 P.</span></div>
+
+    <div class="q">
+      <div class="qt"><span class="qn">3.3</span> Welche Eigenschaften hat jeder Buchstabe? <span class="pts">(10 P.)</span></div>
+      <div class="examgrid"><table class="eg" id="examGrid"></table></div>
+    </div>
+    <div class="q">
+      <div class="qt"><span class="qn">3.4</span> Markiere alle Buchstaben mit <b>ṣafīr</b>. <span class="pts">(5 P.)</span></div>
+      <div class="letterselect" id="selSafir"></div>
+      <div class="why" id="whySafir"></div>
+    </div>
+    <div class="q">
+      <div class="qt"><span class="qn">3.5</span> Markiere alle <b>qalqala</b>-Buchstaben. <span class="pts">(5 P.)</span></div>
+      <div class="letterselect" id="selQalqala"></div>
+      <div class="why" id="whyQalqala"></div>
+    </div>
+    <div class="q">
+      <div class="qt"><span class="qn">3.6</span> Ist das <span class="ar">ر</span> <b>mufaḫḫam</b> oder <b>muraqqaq</b>? <span class="pts">(8 P.)</span></div>
+      <div id="raWrap"></div>
+    </div>
+    <div id="textWrap"></div>
+  </div>
+
+  <div class="exam-foot">
+    <button class="btn primary" id="examGrade">Prüfung auswerten</button>
+    <button class="btn ghost" id="examReset">Alles zurücksetzen</button>
+  </div>
+  <div class="result-banner" id="resultBanner"></div>
+</section>
+
+</main>
+
+<button class="fab" id="fabGrade">Auswerten ✓</button>
+
+<nav class="bottomnav" data-nav>
+  <button data-tab="start" class="active"><span class="ic">🏠</span><span class="lab">Start</span></button>
+  <button data-tab="lektionen"><span class="ic">📖</span><span class="lab">Lektionen</span></button>
+  <button data-tab="makharij"><span class="ic">🗣️</span><span class="lab">Maḫāriǧ</span></button>
+  <button data-tab="eigenschaften"><span class="ic">✓</span><span class="lab">Eigensch.</span></button>
+  <button data-tab="pruefung"><span class="ic">📝</span><span class="lab">Prüfung</span></button>
+</nav>
+
+<footer>
+  Inoffizielles Lernwerkzeug auf Basis der IQRA-B1-Unterlagen (Islamisches Zentrum Wien).<br>وفقكم الله — Viel Erfolg!
+</footer>
+
+<script>
+/* ===== DATENBASIS ===== */
+const HARF={
+ 'ء':{n:'Hamza',voice:'jahr',flow:'shidda',elev:'istifal',clos:'infitah',extra:[]},
+ 'ا':{n:'Alif (madd)',voice:'jahr',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:[]},
+ 'ب':{n:'Bāʾ',voice:'jahr',flow:'shidda',elev:'istifal',clos:'infitah',extra:['qalqala']},
+ 'ت':{n:'Tāʾ',voice:'hams',flow:'shidda',elev:'istifal',clos:'infitah',extra:[]},
+ 'ث':{n:'Ṯāʾ',voice:'hams',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:[]},
+ 'ج':{n:'Ǧīm',voice:'jahr',flow:'shidda',elev:'istifal',clos:'infitah',extra:['qalqala']},
+ 'ح':{n:'Ḥāʾ',voice:'hams',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:[]},
+ 'خ':{n:'Ḫāʾ',voice:'hams',flow:'rakhawa',elev:'istilaa',clos:'infitah',extra:[]},
+ 'د':{n:'Dāl',voice:'jahr',flow:'shidda',elev:'istifal',clos:'infitah',extra:['qalqala']},
+ 'ذ':{n:'Ḏāl',voice:'jahr',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:[]},
+ 'ر':{n:'Rāʾ',voice:'jahr',flow:'bayniyya',elev:'istifal',clos:'infitah',extra:['inhiraf','takrir']},
+ 'ز':{n:'Zāy',voice:'jahr',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:['safir']},
+ 'س':{n:'Sīn',voice:'hams',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:['safir']},
+ 'ش':{n:'Šīn',voice:'hams',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:['tafashi']},
+ 'ص':{n:'Ṣād',voice:'hams',flow:'rakhawa',elev:'istilaa',clos:'itbaq',extra:['safir']},
+ 'ض':{n:'Ḍād',voice:'jahr',flow:'rakhawa',elev:'istilaa',clos:'itbaq',extra:['istitala']},
+ 'ط':{n:'Ṭāʾ',voice:'jahr',flow:'shidda',elev:'istilaa',clos:'itbaq',extra:['qalqala']},
+ 'ظ':{n:'Ẓāʾ',voice:'jahr',flow:'rakhawa',elev:'istilaa',clos:'itbaq',extra:[]},
+ 'ع':{n:'ʿAin',voice:'jahr',flow:'bayniyya',elev:'istifal',clos:'infitah',extra:[]},
+ 'غ':{n:'Ġain',voice:'jahr',flow:'rakhawa',elev:'istilaa',clos:'infitah',extra:[]},
+ 'ف':{n:'Fāʾ',voice:'hams',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:[]},
+ 'ق':{n:'Qāf',voice:'jahr',flow:'shidda',elev:'istilaa',clos:'infitah',extra:['qalqala']},
+ 'ك':{n:'Kāf',voice:'hams',flow:'shidda',elev:'istifal',clos:'infitah',extra:[]},
+ 'ل':{n:'Lām',voice:'jahr',flow:'bayniyya',elev:'istifal',clos:'infitah',extra:['inhiraf']},
+ 'م':{n:'Mīm',voice:'jahr',flow:'bayniyya',elev:'istifal',clos:'infitah',extra:['ghunna']},
+ 'ن':{n:'Nūn',voice:'jahr',flow:'bayniyya',elev:'istifal',clos:'infitah',extra:['ghunna']},
+ 'ه':{n:'Hāʾ',voice:'hams',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:[]},
+ 'و':{n:'Wāw',voice:'jahr',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:['lin']},
+ 'ي':{n:'Yāʾ',voice:'jahr',flow:'rakhawa',elev:'istifal',clos:'infitah',extra:['lin']},
+};
+const ORDER=Object.keys(HARF);
+const LABELS={hams:'hams',jahr:'ǧahr',shidda:'šidda',bayniyya:'bayniyya',rakhawa:'raḫāwa',istilaa:"istiʿlāʾ",istifal:'istifāl',itbaq:'iṭbāq',infitah:'infitāḥ',safir:'ṣafīr',qalqala:'qalqala',lin:'līn',inhiraf:'inḥirāf',takrir:'takrīr',tafashi:'tafašī',istitala:'istiṭāla',ghunna:'ġunna'};
+function propsOf(h){const d=HARF[h];return new Set([d.voice,d.flow,d.elev,d.clos,...d.extra]);}
+const COLS_OPP=['hams','jahr','shidda','bayniyya','rakhawa','istilaa','istifal','itbaq','infitah'];
+const COLS_EXTRA=['safir','qalqala','lin','inhiraf','takrir','tafashi','istitala','ghunna'];
+const ALLCOLS=[...COLS_OPP,...COLS_EXTRA];
+
+/* ===== NAVIGATION (event delegation = robust auf iOS) ===== */
+function goTab(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===name));
+  document.querySelectorAll('[data-nav] button[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+  document.getElementById('fabGrade').classList.toggle('show',name==='pruefung');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('click',function(e){
+  const tabBtn=e.target.closest('[data-tab]');
+  if(tabBtn){goTab(tabBtn.dataset.tab);return;}
+});
+
+/* ===== LEKTIONEN ===== */
+const LESSONS=[
+ {n:1,t:'Vorstellung Taǧwīd',s:'Definition & Fehlerarten',body:`
+  <h4>Definition</h4><ul><li><b>Sprachlich:</b> „gut und schön machen“.</li><li><b>Fachlich:</b> jeden Laut vom maḫraǧ mit <b>ḥaqq</b> (Grundrecht) und <b>mustaḥaqq</b> (Beirecht) aussprechen.</li></ul>
+  <h4>Fehlerarten (Laḥn)</h4><ul><li><b>Ǧaliyy</b> (offenkundig): ändert Bedeutung/Grammatik — z.B. Buchstaben/Ḥaraka vertauschen. Verletzt ḥaqq → ḥarām.</li><li><b>Ḫafiyy</b> (versteckt): nur mit Taǧwīd-Wissen erkennbar — z.B. Ġunna/Madd/Qalqala vergessen. Verletzt mustaḥaqq.</li></ul>`},
+ {n:2,t:'Basmala & Istiʿāḏa',s:'Zuflucht & Widmung',body:`
+  <h4>Istiʿāḏa</h4><ul><li><span class="ar">أعوذ بالله من الشيطان الرجيم</span> — immer vor dem Lesen.</li></ul>
+  <h4>Basmala</h4><ul><li>Sūra-Anfang: nach Istiʿāḏa pflicht — außer at-Tawba.</li><li>Mitten in Sūra: freiwillig.</li></ul>
+  <div class="note">Ta'awwudh+Basmala: alle 4 Kombinationen erlaubt.</div>
+  <div class="warn">Zwischen 2 Suren: „Ende verbinden + Basmala stoppen“ ist verboten.</div>
+  <h4>Al-Anfāl → at-Tawba</h4><ul><li>Keine Basmala: <b>Waqf</b>, <b>Waṣl</b> oder <b>Sakt</b>.</li></ul>`},
+ {n:3,t:'Stehenbleiben & Längen',s:'waqf und madd',body:`
+  <h4>waqf-Merkregeln</h4><ul><li>sukūn-Ende → mit sukūn.</li><li>Ḥaraka → mit sukūn.</li><li>Tanwīn: fatḥatān → alif; sonst sukūn.</li><li>alif/wāw/yāʾ → selbst; tāʾ marbūṭa → hāʾ.</li><li>šadda → šadda (Nūn → Ġunna).</li></ul>
+  <h4>Symbole</h4><ul><li><b>مـ</b> Lāzim (muss stoppen) · <b>لا</b> Mamnūʿ (weiterlesen)</li><li><b>ج</b> beides · <b>قلى</b> stoppen bevorz. · <b>صلى</b> weiterlesen bevorz. · <b>∴∴</b> nur an einer Stelle.</li></ul>
+  <h4>Madd</h4><ul><li>Zeichen <b>~</b> = 4 Ḥarakāt (außer madd lāzim).</li></ul>`},
+ {n:4,t:'Entstehungsorte — Ǧawf',s:'Mund & Rachenhöhle',body:`
+  <h4>Grundlagen</h4><ul><li>maḫraǧ finden: Buchstaben sākin + Hamza davor; wo der Laut endet = maḫraǧ.</li></ul>
+  <h4>al-ǧawf (3)</h4><ul><li>Madd-Laute <span class="ar">ا و ي</span>. Merkwort: <span class="ar">نُوحِيهَا</span>.</li></ul>`},
+ {n:5,t:'Entstehungsorte — Kehle',s:'al-ḥalq · 6 Buchstaben',body:`
+  <ul><li>Unterste (aqṣā): <span class="ar">ء — ه</span></li><li>Mittlere (wasṭ): <span class="ar">ع — ح</span></li><li>Obere (adnā): <span class="ar">غ — خ</span></li></ul>`},
+ {n:6,t:'Entstehungsorte — Zunge 1',s:'al-lisān Teil 1',body:`
+  <ul><li>Ende + Fleisch-Gaumen: <span class="ar">ق</span></li><li>Ende + Gaumen: <span class="ar">ك</span></li><li>Mitte + Knochen-Gaumen: <span class="ar">ج ش ي</span></li><li>Seiten + Backenzähne: <span class="ar">ض</span></li></ul>`},
+ {n:7,t:'Entstehungsorte — Zunge 2',s:'al-lisān Teil 2',body:`
+  <ul><li>Rand/Spitze + Gaumen-Anfang: <span class="ar">ل ن ر</span></li><li>Anfang + Zahnansatz: <span class="ar">ط د ت</span></li><li>über unteren Schneidezähnen: <span class="ar">ص س ز</span></li><li>zwischen Schneidezähnen: <span class="ar">ظ ذ ث</span></li></ul>`},
+ {n:8,t:'Lippen & Nase',s:'aš-šafatān & al-ḫayšūm',body:`
+  <h4>Lippen (4)</h4><ul><li>Unterlippe+Zähne: <span class="ar">ف</span> · Runden: <span class="ar">و</span> · Schließen: <span class="ar">ب</span> · Schließen+Ġunna: <span class="ar">م</span></li></ul>
+  <h4>Nase (2)</h4><ul><li><span class="ar">ن</span> und <span class="ar">م</span> tragen Ġunna.</li></ul>`},
+ {n:9,t:'Gegensätzliche Eig. 1',s:'hams/ǧahr · šidda/raḫāwa',body:`
+  <ul><li><b>hams</b>: Luftfluss — <span class="ar">فحثه شخص سكت</span> (10).</li><li><b>ǧahr</b>: kein Luftfluss (Rest).</li><li><b>šidda</b>: kein Tonfluss — <span class="ar">أجد قط بكت</span> (8).</li><li><b>bayniyya</b>: <span class="ar">لن عمر</span> (5).</li><li><b>raḫāwa</b>: Tonfluss (Rest).</li></ul>
+  <div class="warn">ǧahr = kein Luftfluss · šidda = kein Tonfluss.</div>`},
+ {n:10,t:'Gegensätzliche Eig. 2',s:'istiʿlāʾ/istifāl · iṭbāq',body:`
+  <ul><li><b>istiʿlāʾ</b>: immer dick — <span class="ar">خص ضغط قظ</span> (7).</li><li><b>istifāl</b>: dünn (Rest).</li><li><b>iṭbāq</b>: <span class="ar">ص ض ط ظ</span> (4).</li><li><b>infitāḥ</b>: Rest.</li></ul>
+  <div class="note">5 tafḫīm-Stufen: fatḥa+alif › fatḥa › ḍamma › sukūn › kasra. iṭbāq verstärkt istiʿlāʾ.</div>`},
+ {n:11,t:'Gegensätzliche Eig. 3',s:'tafḫīm/tarqīq ا ل ر',body:`
+  <ul><li><span class="ar">ا</span> folgt dem Laut davor.</li><li><span class="ar">ل</span> dick nur in <span class="ar">الله</span> nach fatḥa/ḍamma; sonst dünn.</li><li><span class="ar">ر</span> dick: fatḥa/ḍamma; sākin nach fatḥa/ḍamma. Dünn: kasra; sākin nach kasra; sākin nach yāʾ-sākin.</li></ul>
+  <div class="note"><span class="ar">ر</span>: 8× dick, 4× dünn, 2× beides.</div>`},
+ {n:12,t:'Nicht-geg. Eig. 1',s:'ṣafīr · qalqala · līn',body:`
+  <ul><li><b>ṣafīr</b>: <span class="ar">ص ز س</span> (Zischen).</li><li><b>qalqala</b>: <span class="ar">ق ط ب ج د</span> — klein (im Wort) / groß (am Stopp, stärker).</li><li><b>līn</b>: <span class="ar">و ي</span> sākin nach fatḥa.</li></ul>`},
+ {n:13,t:'Nicht-geg. Eig. 2',s:'inḥirāf · takrīr · tafašī · istiṭāla',body:`
+  <ul><li><b>inḥirāf</b>: <span class="ar">ل ر</span>.</li><li><b>takrīr</b>: <span class="ar">ر</span> (Vibration, nicht rollen).</li><li><b>tafašī</b>: <span class="ar">ش</span> (Ausbreitung).</li><li><b>istiṭāla</b>: <span class="ar">ض</span> (Verlängerung).</li></ul>`},
+];
+const lessonList=document.getElementById('lessonList');
+LESSONS.forEach(L=>{
+  const d=document.createElement('div');d.className='lesson';
+  d.innerHTML=`<button type="button" class="lhead"><span class="lnum">${L.n}</span><span class="ltitle"><b>Lektion ${L.n}: ${L.t}</b><small>${L.s}</small></span><span class="arr">›</span></button><div class="lbody">${L.body}</div>`;
+  d.querySelector('.lhead').addEventListener('click',()=>d.classList.toggle('open'));
+  lessonList.appendChild(d);
+});
+
+/* ===== MAKHARIJ ===== */
+const MAKH=[
+ {ar:'الجوف',de:'Mund & Rachenhöhle',sub:1,let:3,subs:[{h:'1 Stelle · 3 Madd-Laute',l:['ا','و','ي'],d:'sākin nach passender Ḥaraka.'}]},
+ {ar:'الحلق',de:'Die Kehle',sub:3,let:6,subs:[{h:'Unterste · aqṣā l-ḥalq',l:['ء','ه'],d:''},{h:'Mittlere · wasṭ al-ḥalq',l:['ع','ح'],d:''},{h:'Obere · adnā l-ḥalq',l:['غ','خ'],d:''}]},
+ {ar:'اللسان',de:'Die Zunge',sub:10,let:18,subs:[{h:'Ende + Fleisch-Gaumen',l:['ق'],d:''},{h:'Ende + Gaumen',l:['ك'],d:''},{h:'Mitte + Knochen-Gaumen',l:['ج','ش','ي'],d:''},{h:'Seiten + Backenzähne',l:['ض'],d:''},{h:'Rand + Gaumen-Anfang',l:['ل'],d:''},{h:'Anfang + Gaumen-Anfang',l:['ن'],d:''},{h:'Spitze + Gaumen-Anfang',l:['ر'],d:''},{h:'Anfang + Zahnansatz',l:['ط','د','ت'],d:''},{h:'über unteren Schneidezähnen',l:['ص','س','ز'],d:''},{h:'zwischen Schneidezähnen',l:['ظ','ذ','ث'],d:''}]},
+ {ar:'الشفتان',de:'Die Lippen',sub:2,let:4,subs:[{h:'Unterlippe + Schneidezähne',l:['ف'],d:''},{h:'Runden / Schließen',l:['و','ب','م'],d:'و runden · ب schließen · م +Ġunna.'}]},
+ {ar:'الخيشوم',de:'Die Nasenhöhle',sub:1,let:2,subs:[{h:'1 Stelle · Ġunna',l:['ن','م'],d:'jedes Nūn und Mīm.'}]},
+];
+const mkGrid=document.getElementById('mkGrid');const mkDetail=document.getElementById('mkDetail');
+MAKH.forEach((m,i)=>{
+  const c=document.createElement('button');c.type='button';c.className='mk';
+  c.innerHTML=`<span class="ar">${m.ar}</span><b>${i+1}. ${m.de}</b><small>${m.sub} Stelle(n) · ${m.let} Buchst.</small>`;
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('.mk').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');
+    mkDetail.style.display='block';
+    mkDetail.innerHTML=`<h2 class="sec" style="margin-top:0">${m.de} <span class="ar" style="color:var(--gold-2)">${m.ar}</span></h2>`+
+      m.subs.map((s,j)=>`<div class="subloc"><div class="h"><small><b>${j+1}.</b> ${s.h}</small><div class="letters">${s.l.map(x=>`<span>${x}</span>`).join('')}</div></div>${s.d?`<small style="display:block;margin-top:.3rem">${s.d}</small>`:''}</div>`).join('');
+    mkDetail.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  mkGrid.appendChild(c);
+});
+
+/* ===== TRAINER ===== */
+let curLetter=null;
+const letterpick=document.getElementById('letterpick');
+ORDER.forEach(h=>{const b=document.createElement('button');b.type='button';b.textContent=h;b.dataset.h=h;b.addEventListener('click',()=>pickLetter(h));letterpick.appendChild(b);});
+const trGrid=document.getElementById('trGrid'),trLetter=document.getElementById('trLetter'),trHint=document.getElementById('trHint'),trFeedback=document.getElementById('trFeedback');
+function pickLetter(h){
+  curLetter=h;
+  document.querySelectorAll('#letterpick button').forEach(b=>b.classList.toggle('active',b.dataset.h===h));
+  trLetter.innerHTML=`<span class="ar" style="font-size:2rem;color:var(--gold-2)">${h}</span> &nbsp;${HARF[h].n}`;
+  trHint.textContent='Kreuze jede zutreffende Eigenschaft an.';trFeedback.textContent='';trFeedback.className='feedback';
+  trGrid.innerHTML=ALLCOLS.map(c=>`<label data-c="${c}"><input type="checkbox">${LABELS[c]}</label>`).join('');
+}
+document.getElementById('trCheck').addEventListener('click',()=>{
+  if(!curLetter){trFeedback.textContent='Bitte zuerst einen Buchstaben wählen.';trFeedback.className='feedback no';return;}
+  const correct=propsOf(curLetter);let right=0,wrong=0,missed=0,total=0;
+  trGrid.querySelectorAll('label').forEach(l=>{
+    l.classList.remove('correct','wrong','missed');
+    const c=l.dataset.c,checked=l.querySelector('input').checked,should=correct.has(c);
+    if(should)total++;
+    if(checked&&should){l.classList.add('correct');right++}
+    else if(checked&&!should){l.classList.add('wrong');wrong++}
+    else if(!checked&&should){l.classList.add('missed');missed++}
+  });
+  if(!wrong&&!missed){trFeedback.textContent='✓ Perfekt! Alle Eigenschaften korrekt.';trFeedback.className='feedback ok';}
+  else{trFeedback.textContent=`${right}/${total} richtig · ${wrong} falsch · ${missed} vergessen (grün=richtig, rot=falsch, gelb=fehlt).`;trFeedback.className='feedback no';}
+});
+document.getElementById('trReset').addEventListener('click',()=>{if(curLetter)pickLetter(curLetter)});
+document.getElementById('trNext').addEventListener('click',()=>pickLetter(ORDER[Math.floor(Math.random()*ORDER.length)]));
+
+/* reference table */
+document.getElementById('refTable').innerHTML=`<thead><tr><th>Buchst.</th>${ALLCOLS.map(c=>`<th>${LABELS[c]}</th>`).join('')}</tr></thead><tbody>${ORDER.map(h=>{const p=propsOf(h);return `<tr><td class="l">${h}</td>${ALLCOLS.map(c=>p.has(c)?`<td class="y">✓</td>`:`<td></td>`).join('')}</tr>`}).join('')}</tbody>`;
+
+/* ===== PRÜFUNG ===== */
+const TF=[
+ {q:'Die Istiʿāḏa muss ausgesprochen werden, bevor man die Basmalah spricht.',a:true,why:'Richtig — beim Sūra-Anfang Basmala nach Istiʿāḏa.'},
+ {q:'Die Basmalah gehört zur Sūra al-Fātiḥa und wird immer zusammen mit ihr rezitiert.',a:false,why:'Falsch — sie steht am Anfang fast jeder Sūra, nicht nur der Fātiḥa.'},
+ {q:'Beim Stehenbleiben wird der letzte Buchstabe immer mit Sukūn ausgesprochen.',a:false,why:'Falsch — z.B. tanwīn-fatḥa → alif, tāʾ marbūṭa → hāʾ.'},
+ {q:'Alle Buchstaben mit Ḥaraka werden exakt gleich lang ausgesprochen.',a:false,why:'Falsch — Dauer hängt von šidda/raḫāwa, madd, qalqala ab.'},
+ {q:'Einen Buchstaben durch einen anderen zu ersetzen ist Laḥn Ǧaliyy.',a:true,why:'Richtig — ändert Bedeutung, verletzt ḥaqq.'},
+ {q:'Qalqala hat nur eine Stufe und klingt immer gleich stark.',a:false,why:'Falsch — kleine und große qalqala.'},
+ {q:'Es gibt genau 7 Buchstaben, die wegen istiʿlāʾ immer mufaḫḫam sind.',a:true,why:'Richtig: خص ضغط قظ = 7.'},
+ {q:'Der Buchstabe ل ist immer muraqqaq und nie mufaḫḫam.',a:false,why:'Falsch — in الله nach fatḥa/ḍamma dick.'},
+ {q:'Hams beschreibt offene Stimmbänder = Luftfluss.',a:true,why:'Richtig.'},
+ {q:'Die ṣafīr-Eigenschaft betrifft ش، س، ز.',a:false,why:'Falsch — ص، س، ز (nicht ش).'},
+];
+const tfWrap=document.getElementById('tfWrap');
+TF.forEach((it,i)=>{const d=document.createElement('div');d.className='q';d.dataset.idx=i;
+  d.innerHTML=`<div class="qhead"><span class="qn">1.${i+1}</span><span class="res"></span></div><div class="qt">${it.q}</div><div class="tfrow"><label class="opt tf"><input type="radio" name="tf${i}" value="true">Wahr</label><label class="opt tf"><input type="radio" name="tf${i}" value="false">Falsch</label></div><div class="why">${it.why}</div>`;
+  tfWrap.appendChild(d);});
+
+const MC=[
+ {q:'Wie viele Buchstaben hat das arabische Alphabet laut Taǧwīd?',o:['28','29','30'],a:1,why:'Inkl. Hamza: 29.'},
+ {q:'Welche Aussage zur Basmalah ist korrekt?',o:['Vor jeder Sūra, außer at-Tawba.','Am Anfang jeder Sūra und jedes Verses.','Nur Pflicht bei al-Fātiḥa.'],a:0,why:'Vor jeder Sūra außer at-Tawba.'},
+ {q:'Hauptentstehungsort von ح ع ه ء غ خ?',o:['Die Zunge','Die Kehle (al-ḥalq)','Die Nasenhöhle'],a:1,why:'Die Kehle.'},
+ {q:'Welche Buchstaben aus der untersten Kehle (aqṣā l-ḥalq)?',o:['ح und ع','غ und خ','ه und ء'],a:2,why:'ء und ه.'},
+ {q:'Beschreibung von ǧahr?',o:['Stimmbänder offen, Luftfluss.','Stimmbänder geschlossen, kein Luftfluss.','Entstehungsort geschlossen, kein Tonfluss.'],a:1,why:'Geschlossene Stimmbänder, kein Luftfluss.'},
+ {q:'Welche Buchstaben besitzen iṭbāq?',o:['خ ص ض غ','ص ض ط ظ','ق ط ض ص'],a:1,why:'ص ض ط ظ.'},
+ {q:'Was bedeutet istifāl?',o:['Ton steigt nach oben.','Ton steigt NICHT nach oben.','Luftfluss durch die Nase.'],a:1,why:'Ton steigt nicht nach oben.'},
+ {q:'Welche Eigenschaft besitzt ausschließlich ض?',o:['Takrīr','Istiṭāla','Tafašī'],a:1,why:'istiṭāla nur bei ض.'},
+ {q:'Wann ist das Rā ر muraqqaq?',o:['Wenn es Fatḥa trägt.','Wenn es sākin ist und Kasra vorausgeht.','Wenn es sākin ist und Fatḥa vorausgeht.'],a:1,why:'sākin nach Kasra → dünn.'},
+ {q:'Was beschreibt inḥirāf?',o:['Ton durch die Nase.','Ton weicht ab, Zunge im Weg (ل und ر).','Entstehungsort ganz geschlossen.'],a:1,why:'Abweichung bei ل und ر.'},
+];
+const mcWrap=document.getElementById('mcWrap');
+MC.forEach((it,i)=>{const d=document.createElement('div');d.className='q';d.dataset.idx=i;
+  d.innerHTML=`<div class="qhead"><span class="qn">2.${i+1}</span><span class="res"></span></div><div class="qt">${it.q}</div><div class="opts">${it.o.map((o,j)=>{const ar=/[\u0600-\u06FF]/.test(o);return `<label class="opt"><input type="radio" name="mc${i}" value="${j}"><span ${ar?'class="ar"':''}>${o}</span></label>`}).join('')}</div><div class="why">${it.why}</div>`;
+  mcWrap.appendChild(d);});
+
+/* 3.3 grid — full-cell labels for big tap targets */
+const GRID_LETTERS=['م','ر','ف','ط','ج','ن','ق','ذ','ح','ل'];
+document.getElementById('examGrid').innerHTML=`<thead><tr><th>Buchst.</th>${COLS_OPP.map(c=>`<th>${LABELS[c]}</th>`).join('')}</tr></thead><tbody>${GRID_LETTERS.map(h=>`<tr data-h="${h}"><td class="l">${h}</td>${COLS_OPP.map(c=>`<td class="cell" data-c="${c}"><label><input type="checkbox"></label></td>`).join('')}</tr>`).join('')}</tbody>`;
+
+/* 3.4/3.5 selects */
+function buildSelect(elId,pool){const el=document.getElementById(elId);el.innerHTML=pool.map(h=>`<label data-h="${h}"><input type="checkbox">${h}</label>`).join('');
+  el.querySelectorAll('label').forEach(l=>{const inp=l.querySelector('input');inp.addEventListener('change',()=>l.classList.toggle('on',inp.checked));});}
+buildSelect('selSafir',['ف','ط','ض','ح','س','م','ص','ك','ز','ث']);
+buildSelect('selQalqala',['ر','ء','م','ج','ل','د','ط','ن','ب','ق']);
+
+/* 3.6 ra */
+const RA=[
+ {w:'مَرْيَمَ',ctx:'ر mit fatḥa',a:'dick',why:'fatḥa → mufaḫḫam.'},
+ {w:'فِرْعَوْنَ',ctx:'ر sākin, kasra davor',a:'duenn',why:'sākin nach kasra → muraqqaq.'},
+ {w:'خَيْرٌ',ctx:'ر sākin, yāʾ-sākin davor',a:'duenn',why:'sākin nach yāʾ-sākin → muraqqaq.'},
+ {w:'مَرَّ',ctx:'ر mit fatḥa',a:'dick',why:'fatḥa → mufaḫḫam.'},
+];
+const raWrap=document.getElementById('raWrap');
+RA.forEach((r,i)=>{const d=document.createElement('div');d.className='rarow';d.dataset.idx=i;
+  d.innerHTML=`<span class="w ar">${r.w}</span><span class="ctx">${r.ctx}</span><div class="pick"><label data-v="dick"><input type="radio" name="ra${i}">mufaḫḫam</label><label data-v="duenn"><input type="radio" name="ra${i}">muraqqaq</label></div><span class="verdict"></span><div class="why">${r.why}</div>`;
+  d.querySelectorAll('.pick label').forEach(l=>l.addEventListener('click',()=>{d.querySelectorAll('.pick label').forEach(x=>x.classList.remove('on'));l.classList.add('on');l.querySelector('input').checked=true;}));
+  raWrap.appendChild(d);});
+
+/* text questions */
+const TEXTQ=[
+ {n:'3.1',q:'Unterschied Laḥn Ǧaliyy vs Ḫafiyy — mit Beispiel.',model:`<b>Ǧaliyy</b> (offenkundig): ändert Bedeutung/Grammatik, verletzt <b>ḥaqq</b>. Bsp.: Buchstaben ersetzen, fatḥa↔ḍamma.<br><b>Ḫafiyy</b> (versteckt): Laut bleibt, aber Vollkommenheit leidet, verletzt <b>mustaḥaqq</b>. Bsp.: Ġunna/Madd/Qalqala vergessen.`},
+ {n:'3.2',q:'maḫraǧ & Bildung von ع, ن, ش, ق.',model:`<span class="ar">ع</span> mittlere Kehle.<br><span class="ar">ن</span> Zungenrand + Gaumen-Anfang, mit Ġunna.<br><span class="ar">ش</span> Zungen-Mitte + Knochen-Gaumen (tafašī).<br><span class="ar">ق</span> Zungen-Ende + Fleisch-Gaumen (dick).`},
+ {n:'3.4-Erkl.',q:'Was bedeutet ṣafīr?',model:`Scharfes <b>Zischen/Pfeifen</b> bei <span class="ar">ص ز س</span>, wenn der Ton zwischen Zunge und oberen Zähnen austritt; am deutlichsten im sukūn.`},
+ {n:'3.5-Sit.',q:'Wann ist Qalqala am stärksten?',model:`Bei der <b>großen qalqala</b> — am <b>Wortende beim Stehenbleiben</b> (bes. mit šadda).`},
+ {n:'3.6-Begr.',q:'Wann ist ein sākin-ر dünn?',model:`Wenn ihm unmittelbar eine <b>kasra</b> vorausgeht (oder ein yāʾ-sākin mit fatḥa/ḍamma davor).`},
+ {n:'3.7',q:'Erkläre zwei: Takrīr, Tafašī, Istiṭāla, Līn + Buchstabe(n).',model:`<b>Takrīr</b> <span class="ar">ر</span>: leichte Vibration (nicht rollen).<br><b>Tafašī</b> <span class="ar">ش</span>: Ausbreitung/Rauschen.<br><b>Istiṭāla</b> <span class="ar">ض</span>: Verlängerung entlang der Zungenkante.<br><b>Līn</b> <span class="ar">و ي</span> sākin nach fatḥa.`},
+];
+const textWrap=document.getElementById('textWrap');
+TEXTQ.forEach(t=>{const d=document.createElement('div');d.className='textq';
+  d.innerHTML=`<div class="qt"><span class="qn">${t.n}</span> ${t.q}</div><textarea placeholder="Deine Antwort …"></textarea><button class="btn ghost reveal-btn" type="button">Musterlösung anzeigen</button><div class="model"><b>Musterlösung:</b><br>${t.model}</div>`;
+  d.querySelector('.reveal-btn').addEventListener('click',function(){const m=d.querySelector('.model');m.classList.toggle('show');this.textContent=m.classList.contains('show')?'Musterlösung verbergen':'Musterlösung anzeigen';});
+  textWrap.appendChild(d);});
+
+/* GRADING */
+const scorebar=document.getElementById('scorebar');
+function gradeSelect(elId,whyId,correctArr,whyText){
+  const el=document.getElementById(elId);el.classList.add('graded');const correct=new Set(correctArr);let score=0;
+  el.querySelectorAll('label').forEach(l=>{const h=l.dataset.h,checked=l.querySelector('input').checked,should=correct.has(h);l.classList.remove('t-correct','t-missed','t-wrong');
+    if(checked&&should){l.classList.add('t-correct');score++;}else if(!checked&&should){l.classList.add('t-missed');}else if(checked&&!should){l.classList.add('t-wrong');score--;}});
+  const why=document.getElementById(whyId);why.style.display='block';why.textContent=whyText+' (grün=richtig, gelb=fehlt, rot=falsch).';
+  return Math.max(0,score);
+}
+function gradeExam(){
+  let got=0,max=0;
+  TF.forEach((it,i)=>{const card=tfWrap.querySelector(`.q[data-idx="${i}"]`);card.classList.add('graded');max++;
+    const chosen=card.querySelector(`input[name="tf${i}"]:checked`),res=card.querySelector('.res'),opts=card.querySelectorAll('.opt');
+    opts.forEach(o=>o.classList.remove('correct','chosen-wrong'));
+    [...opts].find(o=>o.querySelector('input').value===String(it.a)).classList.add('correct');
+    if(chosen){if(chosen.value===String(it.a)){got++;res.textContent='✓';res.className='res ok';}else{res.textContent='✗';res.className='res no';chosen.closest('.opt').classList.add('chosen-wrong');}}else{res.textContent='—';res.className='res no';}});
+  MC.forEach((it,i)=>{const card=mcWrap.querySelector(`.q[data-idx="${i}"]`);card.classList.add('graded');max++;
+    const chosen=card.querySelector(`input[name="mc${i}"]:checked`),res=card.querySelector('.res'),opts=card.querySelectorAll('.opt');
+    opts.forEach(o=>o.classList.remove('correct','chosen-wrong'));opts[it.a].classList.add('correct');
+    if(chosen){if(Number(chosen.value)===it.a){got++;res.textContent='✓';res.className='res ok';}else{res.textContent='✗';res.className='res no';chosen.closest('.opt').classList.add('chosen-wrong');}}else{res.textContent='—';res.className='res no';}});
+  const eg=document.getElementById('examGrid');eg.classList.add('graded');
+  eg.querySelectorAll('tbody tr').forEach(tr=>{const h=tr.dataset.h,correct=propsOf(h);let ok=true;max++;
+    tr.querySelectorAll('td.cell').forEach(td=>{const c=td.dataset.c,checked=td.querySelector('input').checked,should=correct.has(c);td.classList.remove('good','miss','over');
+      if(checked&&should)td.classList.add('good');else if(!checked&&should){td.classList.add('miss');ok=false;}else if(checked&&!should){td.classList.add('over');ok=false;}});
+    if(ok)got++;});
+  got+=gradeSelect('selSafir','whySafir',['ص','س','ز'],'ṣafīr: ص س ز');max+=5;
+  got+=gradeSelect('selQalqala','whyQalqala',['ق','ط','ب','ج','د'],'qalqala: ق ط ب ج د');max+=5;
+  RA.forEach((r,i)=>{const row=raWrap.querySelector(`.rarow[data-idx="${i}"]`);row.classList.add('graded');max+=2;
+    const chosen=row.querySelector(`input[name="ra${i}"]:checked`),v=row.querySelector('.verdict');
+    row.querySelectorAll('.pick label').forEach(l=>{l.classList.remove('right','wrongpick');if(l.dataset.v===r.a)l.classList.add('right');});
+    if(chosen){const lab=chosen.closest('label');if(lab.dataset.v===r.a){got+=2;v.textContent='✓ +2 Punkte';v.style.color='var(--ok)';}else{lab.classList.add('wrongpick');v.textContent='✗ 0 Punkte';v.style.color='var(--bad)';}}else{v.textContent='— nicht beantwortet';v.style.color='var(--bad)';}});
+  const pct=Math.round(got/max*100);
+  scorebar.classList.add('show');
+  document.getElementById('scoreText').textContent=`${got} / ${max} Punkte`;
+  document.getElementById('scoreFill').style.width=pct+'%';
+  document.getElementById('scorePct').textContent=pct+'% (auto-Teil)';
+  const b=document.getElementById('resultBanner');b.classList.add('show');
+  if(pct>=60){b.className='result-banner show pass';b.innerHTML=`<b>${pct}% — bestanden!</b> ما شاء الله. Geh die markierten Felder durch und lies die Musterlösungen der Textfragen.`;}
+  else{b.className='result-banner show fail';b.innerHTML=`<b>${pct}% — weiter üben.</b> Schau dir grün/gelb/rot an und wiederhole die passenden Lektionen. Bleib dran!`;}
+  scorebar.scrollIntoView({behavior:'smooth',block:'center'});
+}
+document.getElementById('examGrade').addEventListener('click',gradeExam);
+document.getElementById('fabGrade').addEventListener('click',gradeExam);
+document.getElementById('examReset').addEventListener('click',()=>{
+  document.querySelectorAll('#pruefung input[type=radio],#pruefung input[type=checkbox]').forEach(i=>i.checked=false);
+  document.querySelectorAll('#pruefung textarea').forEach(t=>t.value='');
+  document.querySelectorAll('#pruefung .graded').forEach(e=>e.classList.remove('graded'));
+  document.querySelectorAll('#pruefung .opt').forEach(o=>o.classList.remove('correct','chosen-wrong'));
+  document.querySelectorAll('#pruefung .letterselect label').forEach(l=>l.classList.remove('on','t-correct','t-missed','t-wrong'));
+  document.querySelectorAll('#pruefung td.cell').forEach(td=>td.classList.remove('good','miss','over'));
+  document.querySelectorAll('#pruefung .pick label').forEach(l=>l.classList.remove('on','right','wrongpick'));
+  document.querySelectorAll('#pruefung .why[id]').forEach(w=>w.style.display='none');
+  document.querySelectorAll('#pruefung .model').forEach(m=>m.classList.remove('show'));
+  scorebar.classList.remove('show');document.getElementById('resultBanner').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+</script>
+</body>
+</html>
